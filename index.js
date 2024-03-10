@@ -1,26 +1,28 @@
-const express = require("express")
-const cors = require("cors")
-const {userRouter} = require("./Route/userRoute")
-const {productRouter} = require("./Route/productRoute")
+const express = require("express");
+const bodyParser = require('body-parser');
+const cors = require("cors");
+const { connection } = require("./db");
+const {userRouter} = require("./Routes/userRoute")
+const {productRouter}= require("./Routes/productRoute")
 require("dotenv").config()
-const {connection} = require("./db")
 
-const app = express()
-
-app.use(express.json())
+const app = express();
+const port = process.env.port || 5050
+app.use(express.json());
 app.use(cors())
+app.use(express.json())
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use("/user", userRouter)
 app.use("/product", productRouter)
-app.get("/", (req,res)=>{
-    res.send("hello")
-})
 
-app.listen(process.env.port, async()=>{
-    try {
-        await connection
-        console.log("server is running")
-        console.log("mongodb is connected")
-    } catch (error) {
-        console.log(error)
-    }
-})
+app.listen(port, async () => {
+  try {
+    await connection;
+    console.log(`Server is running on ${port}`);
+    console.log("connected to db");
+  } catch (error) {
+    console.log(error);
+  }
+});

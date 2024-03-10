@@ -1,20 +1,27 @@
 const jwt = require("jsonwebtoken")
+const { blacklist } = require("../blacklist")
+require("dotenv").config()
 
 const auth = (req,res,next)=>{
     const token = req.headers.authorization?.split(" ")[1]
     if(token){
-        jwt.verify(token, "nykaapp", (err,decoded)=>{
-            if(err){
-                res.send(err)
+        if(blacklist.includes(token)){
+            res.send({"msg":"You have been logout"})
+        }
+        jwt.verify(token, process.env.secretKey, (err,decoded)=>{
+            if(decoded){
+              next()
             }else{
-                next()
+              res.send(err)
             }
-        })
+          })
     }else{
-        res.send({msg: "Not authorised"})
+        res.send({"msg": "You are not authorised"})
     }
+    
 }
 
-module.exports = {
+module.exports={
     auth
 }
+
