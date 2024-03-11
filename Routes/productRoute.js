@@ -18,6 +18,10 @@ productRouter.get("/product", async (req, res) => {
     }
   });
   
+  // Get single product
+  productRouter.get("/product/:id", async(req,res)=>{
+    
+  })
   
   productRouter.post("/addproduct", async (req, res) => {
     try {
